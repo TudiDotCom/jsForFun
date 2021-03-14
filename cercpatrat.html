@@ -1,0 +1,99 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,height=device-height,initial-scale=1">
+<style>
+.middle {
+    display: table-cell; 
+    vertical-align: middle;
+}
+#circle1 {
+    width: 100px;
+    height: 100px;
+    -webkit-border-radius: 50%;
+    -moz-border-radius: 50%;
+    border-radius: 50%;
+    background: red;
+    margin: auto;
+    /* margin-top: 100px; */
+}
+#circle2 {
+    width: 90px;
+    height: 90px;
+    -webkit-border-radius: 50%;
+    -moz-border-radius: 50%;
+    border-radius: 50%;
+    background: blue;
+    margin: auto;
+}
+#div1{
+    display: table; 
+    width: 250px;
+    height: 250px;
+    margin: 50px;
+    border: 5px solid red;
+}
+#div2 {
+  width: 250px;
+  height: 250px;
+  margin: 50px;
+  border: 5px solid blue;
+  display: table; 
+
+}
+</style>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script>
+
+</script>
+</head>
+    <body>
+        <div id="div1" ondrop="drop1(event)" ondragover="allowDrop1(event)"></div>
+        <div id="div2" ondrop="drop2(event)" ondragover="allowDrop2(event)"></div>
+        
+        <div class="middle">
+            <div id="circle1" draggable="true" ondragstart="drag1(event)"> </div> <br />
+        </div>
+        <div class="middle">
+            <div id="circle2" draggable="true" ondragstart="drag2(event)"> </div>
+        </div>
+        </body>
+</html>
+<script>
+function allowDrop1(ev) {
+  ev.preventDefault();
+}
+function allowDrop2(ev) {
+  ev.preventDefault();
+}
+
+function drag1(ev) {
+  ev.dataTransfer.setData("text", ev.target.id);
+}
+function drag2(ev) {
+  ev.dataTransfer.setData("text", ev.target.id);
+}
+function drop1(ev) {
+  ev.preventDefault();
+  let data = ev.dataTransfer.getData("text");
+  
+  if(data==="circle1"){
+        ev.target.appendChild(document.getElementById(data));
+        $('#circle1').attr({'draggable':false,"ondragstart":null});
+        $('#div1').attr({'ondrop':null,"ondragover":null});
+        $('#circle1').css("marginTop",(parseInt($("#div1").css("width"))-parseInt($("#circle1").css("width")))/2)
+    }
+}
+function drop2(ev) {
+  ev.preventDefault();
+  let data = ev.dataTransfer.getData("text");
+
+    if(data==="circle2"){
+        ev.target.appendChild(document.getElementById(data));
+        $('#circle2').attr({'draggable':false,"ondragstart":null});
+        $('#div2').attr({'ondrop':null,"ondragover":null});
+        $('#circle2').css("marginTop",(parseInt($("#div2").css("width"))-parseInt($("#circle2").css("width")))/2)
+    }
+}
+</script>

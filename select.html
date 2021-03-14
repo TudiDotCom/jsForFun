@@ -1,0 +1,197 @@
+
+<html>
+<!doctype HTML>
+<head>
+    <style>
+        html * {
+            font-size: 15pt;
+        }
+        .aaa{
+            /* width: 100px; */
+            border: solid 1px;
+            height: 35px;
+            
+        }
+        #section {
+            margin-left: 10px;
+            padding: 1rem;
+        }
+    </style>
+    <title> Select Test</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script>  
+var a = [
+    ["A1","B1","C1"],
+    ["A1","B1","C2"],
+    ["A1","B1","C3"],
+    ["A1","B2","C4"],
+    ["A1","B2","C5"],
+    ["A1","B3","C6"],
+    ["A2","B4","C7"],
+    ["A2","B5","C8"],
+    ["A2","B5","C9"],
+    ["A3","B6","C10"],
+];   
+let optionsA = ["Toate","A1","A2","A3"];
+let optionsB = ["Toate","B1","B2","B3","B4","B5","B6"];
+let optionsC = ["Toate","C1","C2","C3","C4","C5","C6","C7","C8","C9","C10"];
+</script>
+</head>
+
+<body>
+    <div id="section">
+        A: <select id="A" class="aaa">
+        </select>
+        <br/><br />
+
+        B: <select  id="B" class="aaa">
+        </select>
+        <br/><br />
+
+        C: <select  id="C" class="aaa">
+        </select>
+        <br/>
+        <br/>
+    </div>
+</body>
+</html>
+<script>
+var bElements = optionsB;
+var cElements = optionsC;
+var aElements = optionsA;
+var lastSelectedA = "Toate";
+var lastSelectedC = "Toate";
+var lastSelectedB = "Toate";
+
+let tableCreate = (data) => {
+  let div = $('#section');
+  $('#dataTable').remove();
+  let tbl = document.createElement('table');
+  tbl.style.width = '120px';
+  tbl.setAttribute('border', '1');
+  tbl.setAttribute('id', 'dataTable');
+  let tbdy = document.createElement('tbody');
+  for (let i = 0; i < data.length; i++) {
+    let tr = document.createElement('tr');
+    for (let j = 0; j < data[0].length; j++) {
+        let td = document.createElement('td');
+        td.append(document.createTextNode(data[i][j]));
+        tr.append(td)
+    }
+    tbdy.append(tr);
+  }
+  tbl.append(tbdy);
+  div.append(tbl)
+}
+tableCreate(a);
+
+let setElementsForSelect = (selector, data) => {
+    $("select#"+selector).html('');
+    let option = '';
+    for(let i = 0; i<data.length ; i++){
+        option = $('<option></option>');
+        
+        option.attr('value', data[i]);
+        option.html(data[i]);
+        
+        $("select#"+selector).append(option);
+    }
+}
+setElementsForSelect("A",optionsA);
+setElementsForSelect("B",optionsB);
+setElementsForSelect("C",optionsC);
+
+let filterData = (lastSelect) =>{
+    let data = a;
+    let toateA = lastSelectedA==="Toate";   
+    let toateB = lastSelectedB==="Toate";
+    let toateC = lastSelectedC==="Toate";
+    let b1=[],c1=[],a1=[],newTable = [];
+    for(let i = 0; i < data.length; i++) {
+        if(lastSelectedA === data[i][0] || toateA){
+            if(lastSelectedB===data[i][1] ||toateB){
+                if(lastSelectedC===data[i][2] || toateC){
+                    newTable.push(data[i]);
+                    
+                    if( !b1.includes(data[i][1]) ){
+                        b1.push(data[i][1])
+                    }
+
+                    if(!c1.includes(data[i][2])){
+                        c1.push(data[i][2])
+                    }
+                    
+                    if( !a1.includes(a[i][0]) ){
+                        a1.push(a[i][0])
+                    }
+                }
+            }
+        }
+    }
+    //adaugam si "Toate" daca este posibil
+    if(a1.length!==1)
+    {
+        a1.unshift("Toate");
+    }
+    if(b1.length!==1)
+    {
+        b1.unshift("Toate");
+    }
+    if(c1.length!==1)
+    {
+        c1.unshift("Toate");
+    }
+
+    //setare optiunile pentru fiecare select
+    if(lastSelect!=="A"){
+        aElements = a1;
+        lastSelectedA = a1[0];
+
+    }
+    if(lastSelect!=="B"){
+        bElements = b1;
+        lastSelectedB = b1[0];
+
+    }
+    if(lastSelect!=="C"){
+        cElements = c1;
+        lastSelectedC = c1[0];
+    }
+    tableCreate(newTable);
+    setElementsForSelect("A",aElements);
+    setElementsForSelect("B",bElements);
+    setElementsForSelect("C",cElements);
+    
+    //asa se blocheaza fiecare casuta, inclusiv cea pe care am selectat o
+    // setElementsForSelect("A",a1);
+    // setElementsForSelect("B",b1);
+    // setElementsForSelect("C",c1);
+
+    $("select#A").val(lastSelectedA);
+    $("select#B").val(lastSelectedB);
+    $("select#C").val(lastSelectedC);
+}
+
+//for B select
+$("select#B").on('change', function(){
+    lastSelectedB = $(this).val();
+    $(document).ready(function(){
+        filterData("B");
+    });});
+
+//for C select
+$("select#C").on('change', function(){
+    lastSelectedC = $(this).val();
+    $(document).ready(function(){
+        filterData("C");
+    });
+});
+
+    //for A select
+$("select#A").on('change', function(){
+    lastSelectedA = $(this).val();
+    $(document).ready(function(){
+        filterData("A");
+    });
+});
+</script>
